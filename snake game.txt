@@ -1,0 +1,46 @@
+snake game - documentação de algoritmo, erros e dificuldades durante toda a produção do código. (completamente estilizado como rascunho)
+
+- quadro onde a cobra irá percorrer. (V)
+
+- movimentação da cobra
+	- definir movimento com wsad (V)
+	- fazer a cobra aparecer. (V)
+	- deixar apto para apertar tecla de movimentação (V)
+		- a cobra continua andando mesmo se não apertar nada
+		- fazer com que peça a inserção de dados sem que o código precise parar para isso. (V)
+			usar o 'if' para proporcionar a condição de haver resposta ou não do usuário. (V)
+
+
+			 if(entradamove() <= 5){//OBS: n funciona a condição de entrada da forma q deveria
+             
+            for(int i = 0; i < 10; i++){
+                //coluna
+                for(int j = 0; j < 10; j++){
+                    if(posic[i][j] == 79){
+                        if(posic[i][j+1] == 32){
+
+                            posic[i][j+1] = 79;
+                            posic[i][j] = 32;
+                            break;
+                        }    
+                    }
+                    
+                }
+            }
+        }
+
+
+- aparecimento das maçãs
+- surgimento aleatório das maçãs
+- crescimento da cobra após pegar a maçã
+- fim do jogo caso a cobra bata em seu corpo
+- contagem de quantidade de frutinhas 
+
+
+
+ 					if(posic[i][j+1] == 32){
+                    printf("%c", posic[i][j]);
+
+                    posic[i][j+1] = 79;
+                    posic[i][j] = 32;
+                }
