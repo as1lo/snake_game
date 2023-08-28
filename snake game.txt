@@ -1,46 +1,51 @@
 snake game - documentação de algoritmo, erros e dificuldades durante toda a produção do código. (completamente estilizado como rascunho)
 
-- quadro onde a cobra irá percorrer. (V)
+- base onde a cobra irá percorrer. (V)
 
-- movimentação da cobra
+- movimentação da cobra(V)
 	- definir movimento com wsad (V)
 	- fazer a cobra aparecer. (V)
 	- deixar apto para apertar tecla de movimentação (V)
-		- a cobra continua andando mesmo se não apertar nada
+        - a cobrinha some se for para baixo na coluna '0' vulgo primeira coluna.(V)
+		- a cobra continua andando mesmo se não apertar nada.(V)
 		- fazer com que peça a inserção de dados sem que o código precise parar para isso. (V)
 			usar o 'if' para proporcionar a condição de haver resposta ou não do usuário. (V)
+        
+        //OBS: a cobrinha vai para última linha quando aperta 's'.(V)
+       
+        //OBS: problemas para aparecer na coluna 0.(V)
 
-
-			 if(entradamove() <= 5){//OBS: n funciona a condição de entrada da forma q deveria
+		if(entradamove() <= 5)//OBS: n funciona a condição de entrada da forma q deveria(V)
              
-            for(int i = 0; i < 10; i++){
-                //coluna
-                for(int j = 0; j < 10; j++){
-                    if(posic[i][j] == 79){
-                        if(posic[i][j+1] == 32){
+- fazer com que o corpo acompanhe sequencialmente a posição da cabeça da cobra.(V)
+- adicionar uma contagem para definir a quantidade de impressões para o comprimento do corpo.
+- surgimento aleatório das maçãs(V)
+- crescimento da cobra após pegar a maçã
+- fim do jogo caso a cobra bata em seu corpo
+- fim do jogo caso a cobra bata nas paredes.(V)
+- contagem de quantidade de frutinhas (V)
 
-                            posic[i][j+1] = 79;
-                            posic[i][j] = 32;
-                            break;
-                        }    
-                    }
-                    
+OBS: dia 24/08/2023 houve um reformulação da lógica do código para que ele ficasse mais prático e conciso.
+
+        if(posic[i][j+1] == 32){
+            printf("%c", posic[i][j]);
+
+            posic[i][j+1] = 79;
+            posic[i][j] = 32;
+        }
+
+        for(int i = 0; i < 10; i++){
+            //coluna
+            for(int j = 0; j < 10; j++){
+                if(posic[i][j] == 79){
+                    if(posic[i][j+1] == 32){
+
+                        posic[i][j+1] = 79;
+                        posic[i][j] = 32;
+                        break;
+                    }    
                 }
+                
             }
         }
 
-
-- aparecimento das maçãs
-- surgimento aleatório das maçãs
-- crescimento da cobra após pegar a maçã
-- fim do jogo caso a cobra bata em seu corpo
-- contagem de quantidade de frutinhas 
-
-
-
- 					if(posic[i][j+1] == 32){
-                    printf("%c", posic[i][j]);
-
-                    posic[i][j+1] = 79;
-                    posic[i][j] = 32;
-                }
