@@ -1,65 +1,93 @@
-// │, ┐,┌,─,└,┘, 32(espaço) characteres base.
+//controle de posição baseado X e Y com referência no plano cartesiano.
 #include <stdio.h>
 #include <windows.h>
 #include <conio.h>
-#define VAZIO 32
-#define COBRA 46
+#define X 20 //colunas
+#define Y 10 //linhas
 
-//imprimindo o tabuleiro e definindo as proporções
-void baseTabuleiro(int posic[10][10]){
+//função para aparecimento aleatório das maçãs na posição Y
+int aleatappy() { 
+        static unsigned s = 74; 
+        auto unsigned n = s%10; 
+        s += s/10;
+
+    return n; 
+}
+
+//função para aparecimento aleatório das maçãs na posição X
+int aleatappx() {
+        static unsigned s = 93; 
+        auto unsigned n = s%10; 
+        s += s/10; 
+
+    return n; 
+}
+
+//imprimindo a base e definindo as proporções e condições de impressão de cada elemento.
+void base(int cobray, int cobrax, int appy, int appx, int corpoy, int corpox){
    
-        printf("┌");
-        for(int i = 0; i < 10; i++){
-            printf("─");
-        }
-        printf("┐\n");
-
-        //linha
-        for(int i = 0; i < 10; i++){
-            printf("│");
-
-            //coluna
-            for(int j = 0; j < 10; j++){
-                if(posic[i][j] == COBRA){
-                    printf("\x1b[44m%c\x1b[0m", posic[i][j]);
-                }else{
-                    printf("%c", posic[i][j]);
-                }
-
-                
+    for(int y = 0; y <= Y; y++){
+        for(int x = 0; x <= X; x++){
+            if(y == 0 || x == 0 || y == Y || x == X){
+                //bordas
+                printf("#");
+            }else if(x == cobrax && y == cobray){
+                //cobra definida como espaço vazio com  fundo azul
+                printf("\x1b[44m \x1b[0m");
+            }else if(y == appy && x == appx){
+                //maçãs
+                printf("+");
+            }else if(corpoy == y && corpox == x){
+                //corpo da cobra
+                printf("\x1b[44m \x1b[0m");
+            }else{
+                //espaço vazio
+                printf(" ");
             }
-            printf("│\n");
         }
-
-        printf("└");
-        for(int i = 0; i < 10; i++){
-            printf("─");
-        }
-        printf("┘\n");
-
+        printf("\n");
+    }
     
 }
 
 //entrada de dados para movimentação da cobra
 int entradamove(){
-    char move = getch();//vai pedir uma entrada do usuário sem precisar confirmar com enter
-    
+    char move;
+
+    move = getch();
+
     //retorno de valor definido a depender da tecla digitada
     switch(move){
         case 'w':
-            return 1;
-            break;
-
-        case 'a':
             return 2;
             break;
 
+        case 'a':
+            return 1;
+            break;
+
         case 's':
-            return 3;
+            return 4;
             break;
 
         case 'd':
+            return 3;
+            break;
+        
+        case 'W':
+            return 2;
+            break;
+
+        case 'A':
+            return 1;
+            break;
+
+        case 'S':
             return 4;
+            break;
+
+        case 'D':
+            return 3;
             break;
         
         default:
@@ -70,166 +98,189 @@ int entradamove(){
 }
 
 //funcionamento do jogo
-void jogo(int posic[10][10]){
-    int i, j, move = 4, infi = 1;
+void jogo(int cobray, int cobrax, int appy, int appx, int corpoy, int corpox){
+    int infi = 1, move = 3, score = 0, aux = 0, direciona, moveantes, tempo = 80;
 
     while(infi){
-        i = 0, j = 0;
-        //printf("\ni: %d, j: %d\n", i, j);
-        baseTabuleiro(posic);
-        //OBS: não tá fazendo com que a cobrinha se movimente sozinha.
-        //OBS: a cobrinha vai para última linha quando aperta 's'.
-        //OBS: a cobrinha some se for para baixo na coluna '0' vulgo primeira coluna.
-        //OBS: problemas para aparecer na coluna 0.
-        //OBS: atravessar a borda de cima ou de baixo não reaparece na borda oposta.
-        //OBS: atravessar a borda dos lados reaparece na linha de baixo ou de cima e não na mesma.
+        direciona = 0;
+        moveantes = move; 
+        
+        if(aux == 1){
+            tempo -= 6;
+        }
+        
+        Sleep(tempo);
+        system("cls");
+    
+        base(cobray, cobrax, appy, appx, corpoy, corpox);
 
-
-        //selecionando direção de movimento da cobrinha
+        //selecionando direção de movimento da cobrinha.
         if(kbhit()){//kbhit(keyboard hit): função que verifica se alguma tecla foi pressionada.
+           
             switch(entradamove()){
-                case 1: //w - pra cima 
-                    move = 1;
+                case 1: //a - esquerda 
+                    if(moveantes != 1 && moveantes != 3){
+                        direciona = 1;
+                        move = 1;
+                        break;
+                    }
                     break;
-
-                case 2: //a - pra esquerda 
-                    move = 2;
+                case 2: //w - cima
+                    if(moveantes != 2 && moveantes != 4){
+                        direciona = 1;
+                        move = 2;
+                        break;
+                    }
                     break;
-
-                case 3: //s - pra baixo - OBS: NÃO TA PRONTO XXX
-                    move = 3;
-                    break;
-
-                case 4: //d - pra direita 
-                    move = 4;
-                    break;
-
+                case 3: //d - direito
+                    if(moveantes != 3 && moveantes != 1){
+                        direciona = 1;
+                        move = 3;
+                        break;
+                    }
+                 break;
+                case 4: //s - baixo
+                    if(moveantes != 4 && moveantes != 2){
+                        direciona = 1;
+                        move = 4;
+                        break;
+                    }
                 default:
                     break;
             }
+     
         }
 
-        //movimento automático da cobra
+        //movimentação automatica da cobrinha
         switch(move){
-            case 1: //w - pra cima 
+            case 1: //a - esquerda 
+               
+                if(cobrax - 1 > 0){
+                    corpox = cobrax;
+                    cobrax--;
+                    
+                    if(moveantes == 2){
+                        if(direciona){
+                            corpoy--;
+                        }
+                    }
+
+                    if(moveantes == 4){
+                        if(direciona){
+                            corpoy++;
+                        }
+                    }
+                    break;
+                }else{
+                    infi = 0;
+                    break;
+                }
+            
                 
-                //linha
-                for( i = 0; i < 10; i++){
-                    //coluna
-                    for( j = 0; j < 10; j++){
-                        if(posic[i][j] == COBRA){
-                            
-                                if(posic[i-1][j] == VAZIO && i - 1 >= 0){
-                                    
-                                    posic[i-1][j] = COBRA;
-                                    posic[i][j] = VAZIO;
-                                    break;
-                                }else{
-                                    infi = 0;
-                                    break;
-                                }
-                            
-                        }
-                        
-                    }
-                }
                 break;
-            case 2: //a - pra esquerda 
-                //linha
-                for( i = 0; i < 10; i++){
-                    //coluna
-                    for( j = 0; j < 10; j++){
-                        if(posic[i][j] == COBRA){
-                            if(j - 1 >= 0){
-                                if(posic[i][j-1] == VAZIO){
+            case 2: //w - cima
+              
+                if(cobray - 1 > 0){
+                    corpoy = cobray;
+                    cobray--;
 
-                                    posic[i][j-1] = COBRA;
-                                    posic[i][j] = VAZIO;
-                                    break;
-                                }    
-                            }else{
-                                infi = 0;
-                                break;
-                            }
+                    if(moveantes == 3){
+                        if(direciona){
+                            corpox++;
                         }
-                        
                     }
-                }
-                break;
-            case 3: //s - pra baixo - OBS: NÃO TA PRONTO XXX
-                //linha
-                for( i = 0; i < 10; i++){
-                    //coluna
-                    for( j = 0; j < 10; j++){
-                        printf("\ni: %d, j: %d\n", i, j);
-                        if(posic[i][j] == COBRA){
-                            
-                            if(posic[i + 1][j] == VAZIO){
-                                
-                                posic[i + 1][j] = COBRA;
-                                posic[i][j] = VAZIO;
-                                break;
-                            }else{
-                                infi = 1;
-                                break;
-                            }   
-                        }
-                        
-                    }
-                }
-                break;
-            case 4: //d - pra direita 
-                //linha
-                for( i = 0; i < 10; i++){
-                    //coluna
-                    for( j = 0; j < 10; j++){
-                        if(posic[i][j] == COBRA){
-                            if(j + 1 <= 9){
-                                if(posic[i][j+1] == VAZIO){
 
-                                    posic[i][j+1] = COBRA;
-                                    posic[i][j] = VAZIO;
-                                    break;
-                                }    
-                            }else{
-                                infi = 0;
-                                break;
-                            }
+                    if(moveantes == 1){
+                         if(direciona){
+                            corpox--;
                         }
-                        
                     }
+                    break;
+                }else{
+                    infi = 0;
+                    break;
+
                 }
+            
+                break;
+            case 3: //d - direita 
+         
+                if(cobrax + 1 < X){
+                    corpox = cobrax;
+                    cobrax++;
+
+                    if(moveantes == 2){
+                        if(direciona){
+                            corpoy--;
+                        }
+                    }
+
+                    if(moveantes == 4){
+                        if(direciona){
+                            corpoy++;
+                        }
+                    }
+                    break;
+                }else{
+                    infi = 0;
+                    break;
+                }
+             
+                break;
+            
+            case 4: //s - baixo
+       
+                if(cobray + 1 < Y){
+                    corpoy = cobray;
+                    cobray++;
+
+                    if(moveantes == 1){
+                        if(direciona){
+                            corpox--;
+                        }
+                    }
+
+                    if(moveantes == 3){
+                        if(direciona){
+                            corpox++;
+                        }
+                    }
+                    
+                    break;
+                }else{
+                    infi = 0;
+                    break;
+                }
+                   
+                break;
+            
+            default:
                 break;
         }
-            
+
         
-        Sleep(3000);
-        system("cls");
+            if(cobray == appy && cobrax == appx){
+                appy = aleatappy(), appx = aleatappx();
+                aux = 1;
+                score++;
+            }else{
+                aux = 0;
+            }
+
+            printf("\nSCORE: %d\n", score);
     }
-    
 }
 
-
 int main(){
-    int espaco[10][10];//tamanho do tabuleiro
+    int cobrax = 5, cobray = 5, appy = aleatappy(), appx = aleatappx();
+    int corpox = 5, corpoy = 5;
     char resp;
+
     do{
         //esconder cursor
         printf("\e[?25l");
 
-        //atribuindo o char ('espaço' pra ficar vazio), em uma array, por um número de tipo int baseando na tabela ascii. 
-        for(int i = 0; i < 10; i++){
-            for(int j = 0; j < 10; j++){
-            if(!(i == 0 && j == 0)){
-                    espaco[i][j] = VAZIO;
-            }else{
-                    espaco[0][0] = COBRA;
-            }
-    
-            }
-        }
-
-        jogo(espaco);
+        jogo(cobray, cobrax, appy, appx, corpoy, corpox);
 
         printf("GAME OVER!\nJogar novamente?[s/n]: ");
         scanf(" %c", &resp);
