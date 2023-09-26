@@ -11,6 +11,9 @@ int aleatappy() {
         auto unsigned n = s%10; 
         s += s/10;
 
+        if(n == 0){
+            s = 93;
+        }
     return n; 
 }
 
@@ -20,6 +23,9 @@ int aleatappx() {
         auto unsigned n = s%10; 
         s += s/10; 
 
+        if(n == 0){
+            s = 74;
+        }
     return n; 
 }
 
@@ -99,15 +105,16 @@ int entradamove(){
 
 //funcionamento do jogo
 void jogo(int cobray, int cobrax, int appy, int appx, int corpoy, int corpox){
-    int infi = 1, move = 3, score = 0, aux = 0, direciona, moveantes, tempo = 80;
+
+    int infi = 1, move = 3, score = 0, aux = 0, direciona, moveantes, tempo = 30;
 
     while(infi){
         direciona = 0;
         moveantes = move; 
         
-        if(aux == 1){
-            tempo -= 6;
-        }
+        //if(aux == 1 && tempo > 1){
+        //    tempo -= 6;
+        //}
         
         Sleep(tempo);
         system("cls");
@@ -273,10 +280,17 @@ void jogo(int cobray, int cobrax, int appy, int appx, int corpoy, int corpox){
 
 int main(){
     int cobrax = 5, cobray = 5, appy = aleatappy(), appx = aleatappx();
-    int corpox = 5, corpoy = 5;
+    int corpox = 5, corpoy = 5, menu = 0;
     char resp;
 
     do{
+        
+        printf("======| SNAKE GAME |======\n\nINICIAR[1]\n");
+        scanf("%d", &menu);
+    }while(!menu);
+    
+    do{
+
         //esconder cursor
         printf("\e[?25l");
 
